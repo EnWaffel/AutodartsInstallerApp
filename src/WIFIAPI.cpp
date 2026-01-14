@@ -1,5 +1,7 @@
 #include "WIFIAPI.h"
 
+#include <cstddef>
+#include <cstring>
 #include <wx/msgdlg.h>
 #include <wx/log.h>
 #include <wx/utils.h>
@@ -9,17 +11,16 @@
 #include <cctype>
 #include <wx/event.h>
 
+extern "C" {
+    #include <glib.h>
+    #include <NetworkManager.h>
+}
+
 WIFIAPI::WIFIAPI(CommandAPI& cmdAPI, ConsolePanel* console) : cmdAPI(cmdAPI), console(console) {   
 }
 
-std::vector<std::string> WIFIAPI::GetAvailableNetworks() {
-    std::vector<std::string> networks;
-
-    cmdAPI.SetOutputCallback([&](const std::string& line){
-        console->AddLine(line);
-    });
-
-    cmdAPI.RunCommand("wpa_cli -i wlan0 scan");
+/*
+cmdAPI.RunCommand("wpa_cli -i wlan0 scan");
     wxSleep(3);
 
     std::string output;
@@ -44,8 +45,55 @@ std::vector<std::string> WIFIAPI::GetAvailableNetworks() {
             networks.push_back(ssid);
         }
     }
+*/
 
-    return networks;
+WIFIError WIFIAPI::GetAvailableNetworks(std::vector<std::string>& networks) {
+    cmdAPI.SetOutputCallback([&](const std::string& line){
+        console->AddLine(line);
+    });
+
+    GError* error = NULL;
+    NMClient* client;
+
+    client = nm_client_new(NULL, &error);
+    if (!client) {
+        static char buf[128];
+        memset(buf, 0, sizeof(buf));
+        sprintf(buf, "\n[ERROR] %s\n", error->message);
+        console->AddLine(buf);
+        return WIFIAPI_ERROR_OTHER;
+    }
+
+    const GPtrArray* devices = nm_client_get_devices(client);
+    NMDevice* device = NULL;
+
+    for (int i = 0; i < devices->len; i++) {
+        device = (NMDevice*)devices->pdata[i];
+        if (NM_IS_DEVICE_WIFI(device)) break;
+    }
+
+    if (!device) {
+        g_object_unref(client);
+        console->AddLine("\n[ERROR] No wifi device found!\n");
+        return WIFIAPI_ERROR_OTHER;
+    }
+
+    const GPtrArray* aps = nm_device_wifi_get_access_points((NMDeviceWifi*)device);
+    for (int i = 0; i < aps->len; i++) {
+        NMAccessPoint* ap = (NMAccessPoint*)aps->pdata[i];
+        GBytes* ssid;
+        gsize len;
+        const guint8* data = (const guint8*)g_bytes_get_data(ssid, &len);
+
+        ssid = nm_access_point_get_ssid(ap);
+        char* ssidStr = nm_utils_ssid_to_utf8(data, len);
+
+        networks.push_back(ssidStr);
+    }
+
+    g_object_unref(client);
+
+    return WIFIAPI_SUCCESS;
 }
 
 WIFIError WIFIAPI::ConnectViaWPS(const std::string& ssid) {

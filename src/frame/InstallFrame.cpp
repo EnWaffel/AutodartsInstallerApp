@@ -10,6 +10,7 @@
 #include "wx/timer.h"
 
 #include <cstdlib>
+#include <string>
 #include <wx/event.h>
 #include <wx/gdicmn.h>
 #include <wx/textctrl.h>
@@ -108,8 +109,11 @@ void InstallFrame::CreateWIFISelectPanel() {
         WIFIAPI wifiAPI(cmdAPI, consolePanel);
         consolePanel->Clear();
     
+        std::vector<std::string> networks;
+        wifiAPI.GetAvailableNetworks(networks);
+
         wxArrayString items;
-        for (const auto& v : wifiAPI.GetAvailableNetworks()) {
+        for (const auto& v : networks) {
             items.Add(v);
         }
         

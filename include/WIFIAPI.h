@@ -18,7 +18,7 @@ class WIFIAPI {
 public:
     WIFIAPI(CommandAPI& cmdAPI, ConsolePanel* console);
 
-    std::vector<std::string> GetAvailableNetworks();
+    WIFIError GetAvailableNetworks(std::vector<std::string>& networks);
     WIFIError ConnectViaWPS(const std::string& ssid);
     WIFIError ConnectNormally(const std::string& ssid, const std::string& password);
 protected:
