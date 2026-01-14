@@ -38,7 +38,9 @@ std::vector<std::string> WIFIAPI::GetAvailableNetworks() {
         std::getline(ls, line);
         ssid.erase(ssid.begin(), std::find_if(ssid.begin(), ssid.end(), [](unsigned char c){
             return std::isspace(c);
-        })); 
+        }));
+
+        wxMessageBox(ssid, "info", wxOK | wxICON_INFORMATION);
 
         networks.push_back(ssid);
     }
