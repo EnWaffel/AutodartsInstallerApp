@@ -104,6 +104,10 @@ void InstallFrame::CreateWIFISelectPanel() {
     });
 
     consolePanel->Show();
+    allSizer->Layout();
+    Layout();
+    Update();
+    Refresh();
     RunAsync([&]{
         WIFIAPI wifiAPI(cmdAPI, consolePanel);
     
@@ -111,16 +115,15 @@ void InstallFrame::CreateWIFISelectPanel() {
         for (const auto& v : wifiAPI.GetAvailableNetworks()) {
             items.Add(v);
         }
-        wifiSelectPanel->wifiList->Set(items);
         
         CallAfter([this, items]{
             consolePanel->Hide();
-            wifiSelectPanel->wifiList->Set(items);
             wifiSelectPanel->Show();
             allSizer->Layout();
             Layout();
             Update();
             Refresh();
+            wifiSelectPanel->wifiList->Set(items);
         });
     });
     
