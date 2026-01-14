@@ -84,7 +84,6 @@ void InstallFrame::CreateWIFISelectPanel() {
     wifiSelectPanel = new WIFISelectPanel(panel);
     wifiSelectPanel->Hide();
     wifiSelectPanel->refreshBtn->Bind(wxEVT_BUTTON, [this](wxCommandEvent&){
-        wifiSelectPanel->Destroy();
         subtitleText->SetLabelText("Suche nach WLAN Netzwerken...");
         allSizer->Layout();
         Layout();
@@ -94,10 +93,6 @@ void InstallFrame::CreateWIFISelectPanel() {
         CallAfter([this]{
             wifiSelectPanel->Destroy();
             CreateWIFISelectPanel();
-            allSizer->Layout();
-            Layout();
-            Update();
-            Refresh();
         });
     });
 
@@ -116,6 +111,7 @@ void InstallFrame::CreateWIFISelectPanel() {
         for (const auto& v : wifiAPI.GetAvailableNetworks()) {
             items.Add(v);
         }
+        wifiSelectPanel->wifiList->Set(items);
         
         CallAfter([this, items]{
             consolePanel->Hide();
