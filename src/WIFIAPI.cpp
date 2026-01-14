@@ -81,12 +81,10 @@ WIFIError WIFIAPI::GetAvailableNetworks(std::vector<std::string>& networks) {
     const GPtrArray* aps = nm_device_wifi_get_access_points((NMDeviceWifi*)device);
     for (int i = 0; i < aps->len; i++) {
         NMAccessPoint* ap = (NMAccessPoint*)aps->pdata[i];
-        
+
         GBytes* ssid = nm_access_point_get_ssid(ap);
         gsize len = g_bytes_get_size(ssid);
         const guint8* data = (const guint8*)g_bytes_get_data(ssid, NULL);
-
-        wxMessageBox(std::to_string(len).c_str(), "");
 
         char* ssidStr = nm_utils_ssid_to_utf8(data, len);
 
