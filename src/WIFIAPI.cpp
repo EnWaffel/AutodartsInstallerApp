@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <cstddef>
 
 WIFIAPI::WIFIAPI(CommandAPI& cmdAPI, ConsolePanel* console) : cmdAPI(cmdAPI), console(console) {   
 }
