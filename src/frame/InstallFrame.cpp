@@ -232,8 +232,10 @@ void InstallFrame::CreateAskPwdPanel() {
     
     askPwdPanel->confBtn->Bind(wxEVT_BUTTON, [&](wxCommandEvent&){
         password = askPwdPanel->pwdField->GetValue();
-        askPwdPanel->Destroy();
-        CallAfter([&]{CreateConnectPanel();});
+        CallAfter([&]{
+            askPwdPanel->Destroy();
+            CreateConnectPanel();
+        });
     });
 
     allSizer->Add(askPwdPanel, 0, wxALIGN_CENTER_HORIZONTAL | wxTOP | wxBOTTOM, FromDIP(20));
