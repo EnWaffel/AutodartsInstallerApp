@@ -40,8 +40,6 @@ std::vector<std::string> WIFIAPI::GetAvailableNetworks() {
             return !std::isspace(c);
         }));
 
-        wxMessageBox(ssid, "info", wxOK | wxICON_INFORMATION);
-
         networks.push_back(ssid);
     }
 

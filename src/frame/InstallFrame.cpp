@@ -124,6 +124,7 @@ void InstallFrame::CreateWIFISelectPanel() {
             Update();
             Refresh();
             wifiSelectPanel->wifiList->Set(items);
+            wifiSelectPanel->wifiList->FitInside();
         });
     });
     
