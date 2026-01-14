@@ -293,7 +293,7 @@ void InstallFrame::DoInstall() {
     consolePanel->Show();
 
     RunAsync([this]{
-        cmdAPI.AddOutputCallback([this](const std::string& line){
+        cmdAPI.SetOutputCallback([this](const std::string& line){
             CallAfter([this, line]{
                 consolePanel->AddLine(line);
             });

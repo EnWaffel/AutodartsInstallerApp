@@ -3,8 +3,8 @@
 #include <cstdio>
 #include <fmt/format.h>
 
-void CommandAPI::AddOutputCallback(const CommandOutputCallback& callback) {
-    outputCallbacks.push_back(callback);
+void CommandAPI::SetOutputCallback(const CommandOutputCallback& callback) {
+    outputCallback = callback;
 }
 
 int CommandAPI::RunCommand(const std::string& cmd, std::string* output) {
@@ -32,7 +32,5 @@ int CommandAPI::RunCommand(const std::string& cmd, std::string* output) {
 }
 
 void CommandAPI::OutputLine(const std::string& line) {
-    for (const auto& callback : outputCallbacks) {
-        callback(line);
-    }
+    if (outputCallback) outputCallback(line);
 }

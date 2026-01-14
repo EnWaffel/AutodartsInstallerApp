@@ -2,17 +2,16 @@
 
 #include <string>
 #include <functional>
-#include <vector>
 
 using CommandOutputCallback = std::function<void(const std::string&)>;
 
 class CommandAPI {
 public:
-    void AddOutputCallback(const CommandOutputCallback& callback);
+    void SetOutputCallback(const CommandOutputCallback& callback);
 
     int RunCommand(const std::string& cmd, std::string* output = nullptr);
 private:
-    std::vector<CommandOutputCallback> outputCallbacks;
+    CommandOutputCallback outputCallback;
 
     void OutputLine(const std::string& line);
 };

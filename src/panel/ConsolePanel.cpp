@@ -13,17 +13,19 @@ ConsolePanel::ConsolePanel(wxWindow* parent) : wxScrolledWindow(parent, wxID_ANY
 }
 
 void ConsolePanel::AddLine(const std::string& line) {
-    if (!line.empty() && line.front() == '\r') {
-        lines.back()->SetLabelText(wxString::FromUTF8(line));
-        return;
-    }
+    CallAfter([this, line]{
+        if (!line.empty() && line.front() == '\r') {
+            lines.back()->SetLabelText(wxString::FromUTF8(line));
+            return;
+        }
 
-    wxStaticText* text = new wxStaticText(this, wxID_ANY, wxString::FromUTF8(line));
-    text->SetForegroundColour(*wxWHITE);
-    sizer->Add(text, 0, wxALL, 0);
-    sizer->Layout();
-    FitInside();
-    Scroll(0, GetScrollRange(wxVERTICAL));
+        wxStaticText* text = new wxStaticText(this, wxID_ANY, wxString::FromUTF8(line));
+        text->SetForegroundColour(*wxWHITE);
+        sizer->Add(text, 0, wxALL, 0);
+        sizer->Layout();
+        FitInside();
+        Scroll(0, GetScrollRange(wxVERTICAL));
 
-    lines.push_back(text);
+        lines.push_back(text);
+    });
 }

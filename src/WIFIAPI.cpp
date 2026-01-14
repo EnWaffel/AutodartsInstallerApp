@@ -4,12 +4,17 @@
 #include <string>
 #include <algorithm>
 #include <cctype>
+#include <wx/event.h>
 
 WIFIAPI::WIFIAPI(CommandAPI& cmdAPI, ConsolePanel* console) : cmdAPI(cmdAPI), console(console) {   
 }
 
 std::vector<std::string> WIFIAPI::GetAvailableNetworks() {
     std::vector<std::string> networks;
+
+    cmdAPI.SetOutputCallback([&](const std::string& line){
+        console->AddLine(line);
+    });
 
     cmdAPI.RunCommand("wpa_cli -i wlan0 scan");
 
