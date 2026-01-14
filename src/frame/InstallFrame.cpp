@@ -113,6 +113,7 @@ void InstallFrame::CreateWIFISelectPanel() {
     
         wxArrayString items;
         for (const auto& v : wifiAPI.GetAvailableNetworks()) {
+            std::cout << "network: " << v << std::endl;
             items.Add(v);
         }
         
