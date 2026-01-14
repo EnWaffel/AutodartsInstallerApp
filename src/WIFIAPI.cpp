@@ -32,7 +32,7 @@ std::vector<std::string> WIFIAPI::GetAvailableNetworks() {
     std::getline(iss, line);
 
     while (std::getline(iss, line)) {
-        wxLogMessage(wxString::Format("line: %s", line));
+        wxMessageBox(line, "info", wxOK | wxICON_INFORMATION);
 
         std::string bssid, freq, signal, flags, ssid;
         std::istringstream ls(line);
