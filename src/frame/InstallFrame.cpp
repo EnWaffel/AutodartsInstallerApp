@@ -118,7 +118,7 @@ void InstallFrame::CreateWIFISelectPanel() {
         }
         
         CallAfter([this, items]{
-            consolePanel->Hide();
+            //consolePanel->Hide();
             wifiSelectPanel->Show();
             allSizer->Layout();
             Layout();
