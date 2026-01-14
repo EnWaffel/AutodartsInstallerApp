@@ -77,10 +77,6 @@ InstallFrame::InstallFrame() : wxFrame(nullptr, wxID_ANY, "Installer", wxDefault
 }
 
 void InstallFrame::CreateWIFISelectPanel() {
-    subtitleText->SetLabelText(wxString::FromUTF8("Bitte wähle dein WLAN-Netwerk aus:"));
-    allSizer->Layout();
-    Layout();
-
     wifiSelectPanel = new WIFISelectPanel(panel);
     wifiSelectPanel->Hide();
     wifiSelectPanel->refreshBtn->Bind(wxEVT_BUTTON, [this](wxCommandEvent&){
@@ -117,6 +113,7 @@ void InstallFrame::CreateWIFISelectPanel() {
         }
         
         CallAfter([this, items]{
+            subtitleText->SetLabelText(wxString::FromUTF8("Bitte wähle dein WLAN-Netwerk aus:"));
             consolePanel->Hide();
             wifiSelectPanel->Show();
             wifiSelectPanel->wifiList->Set(items);
