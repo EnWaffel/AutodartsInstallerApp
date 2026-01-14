@@ -1,4 +1,5 @@
 #include "WIFIAPI.h"
+#include "wx/log.h"
 
 #include <iostream>
 #include <sstream>
@@ -28,7 +29,7 @@ std::vector<std::string> WIFIAPI::GetAvailableNetworks() {
     std::getline(iss, line);
 
     while (std::getline(iss, line)) {
-        std::cout << "line: " << line << std::endl;
+        wxLogMessage(wxString::Format("line: %s", line));
 
         std::string bssid, freq, signal, flags, ssid;
         std::istringstream ls(line);
