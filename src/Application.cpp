@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "frame/InstallFrame.h"
+#include "wx/app.h"
 
 #include <wx/init.h>
 #include <filesystem>
@@ -16,4 +17,4 @@ bool Application::OnInit() {
     return true;
 }
 
-wxIMPLEMENT_APP(Application);
+wxIMPLEMENT_APP_CONSOLE(Application);
