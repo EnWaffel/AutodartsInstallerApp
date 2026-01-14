@@ -82,6 +82,7 @@ void InstallFrame::CreateWIFISelectPanel() {
     Layout();
 
     wifiSelectPanel = new WIFISelectPanel(panel);
+    wifiSelectPanel->Hide();
     wifiSelectPanel->refreshBtn->Bind(wxEVT_BUTTON, [this](wxCommandEvent&){
         wifiSelectPanel->Destroy();
         subtitleText->SetLabelText("Suche nach WLAN Netzwerken...");
@@ -111,8 +112,8 @@ void InstallFrame::CreateWIFISelectPanel() {
         
         CallAfter([this, items]{
             consolePanel->Hide();
-            CreateWIFISelectPanel();
             wifiSelectPanel->wifiList->Set(items);
+            wifiSelectPanel->Show();
         });
     });
     
