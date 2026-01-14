@@ -49,7 +49,21 @@ std::vector<std::string> WIFIAPI::GetAvailableNetworks() {
 }
 
 WIFIError WIFIAPI::ConnectViaWPS(const std::string& ssid) {
-    return WIFIAPI_SUCCESS;
+    cmdAPI.SetOutputCallback([&](const std::string& line){
+        console->AddLine(line);
+    });
+
+    std::string result;
+    cmdAPI.RunCommand("wpa_cli -i wlan0 wps_pbc", &result);
+    if (result.find("OK") == std::string::npos) return WIFIAPI_ERROR_OTHER;
+
+    wxSleep(10);
+
+    std::string status;
+    cmdAPI.RunCommand("wpa_cli -i wlan0 status", &status);
+    if (status.find("wpa_state=COMPLETED") != std::string::npos) return WIFIAPI_SUCCESS;
+
+    return WIFIAPI_ERROR_NOT_REACHABLE;
 }
 
 WIFIError WIFIAPI::ConnectNormally(const std::string& ssid, const std::string& password) {

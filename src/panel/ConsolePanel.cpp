@@ -29,3 +29,13 @@ void ConsolePanel::AddLine(const std::string& line) {
         lines.push_back(text);
     });
 }
+
+void ConsolePanel::Clear() {
+    CallAfter([this]{
+        DestroyChildren();
+        lines.clear();
+        sizer->Layout();
+        FitInside();
+        Scroll(0, GetScrollRange(wxVERTICAL));
+    });
+}

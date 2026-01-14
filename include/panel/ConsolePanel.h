@@ -9,6 +9,7 @@ public:
     ConsolePanel(wxWindow* parent);
 
     void AddLine(const std::string& line);
+    void Clear();
 private:
     wxSizer* sizer;
     std::vector<wxStaticText*> lines;

@@ -106,6 +106,7 @@ void InstallFrame::CreateWIFISelectPanel() {
     Refresh();
     RunAsync([&]{
         WIFIAPI wifiAPI(cmdAPI, consolePanel);
+        consolePanel->Clear();
     
         wxArrayString items;
         for (const auto& v : wifiAPI.GetAvailableNetworks()) {
@@ -166,6 +167,7 @@ void InstallFrame::CreateWPSConnectPanel() {
 }
 
 void InstallFrame::OnWPSOkButton(wxCommandEvent& event) {
+    consolePanel->Show();
     subtitleText->SetLabelText(wxString::Format(wxString::FromUTF8("Verbinde zu: %s..."), selectedNetwork));
     allSizer->Layout();
     Layout();
@@ -174,6 +176,8 @@ void InstallFrame::OnWPSOkButton(wxCommandEvent& event) {
     RunAsync([this]{
         WIFIAPI wifiAPI(cmdAPI, nullptr);
         WIFIError error = wifiAPI.ConnectViaWPS(selectedNetwork.utf8_string());
+
+        consolePanel->Hide();
 
         if (error == WIFIAPI_SUCCESS) {
             CallAfter([this]() { subtitleText->SetLabel("Verbunden!"); allSizer->Layout(); Layout(); });
