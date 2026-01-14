@@ -40,7 +40,7 @@ std::vector<std::string> WIFIAPI::GetAvailableNetworks() {
             return !std::isspace(c);
         }));
 
-        if (std::find(networks.begin(), networks.end(), ssid) != networks.end()) {
+        if (std::find(networks.begin(), networks.end(), ssid) == networks.end()) {
             networks.push_back(ssid);
         }
     }
