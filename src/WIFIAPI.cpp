@@ -29,7 +29,7 @@ std::vector<std::string> WIFIAPI::GetAvailableNetworks() {
     std::istringstream iss(output);
     std::string line;
 
-    std::getline(iss, line);
+    //std::getline(iss, line);
 
     while (std::getline(iss, line)) {
         wxMessageBox(line, "info", wxOK | wxICON_INFORMATION);
