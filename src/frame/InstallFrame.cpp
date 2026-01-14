@@ -90,24 +90,7 @@ void InstallFrame::CreateWIFISelectPanel() {
         Update();
         Refresh();
 
-        CallAfter([this]{
-            consolePanel->Show();
-            
-            RunAsync([&]{
-                WIFIAPI wifiAPI(cmdAPI, consolePanel);
-            
-                wxArrayString items;
-                for (const auto& v : wifiAPI.GetAvailableNetworks()) {
-                    items.Add(v);
-                }
-                
-                CallAfter([this, items]{
-                    consolePanel->Hide();
-                    CreateWIFISelectPanel();
-                    wifiSelectPanel->wifiList->Set(items);
-                });
-            });
-        });
+        CallAfter([this]{CreateWIFISelectPanel();});
     });
 
     wifiSelectPanel->selectBtn->Bind(wxEVT_BUTTON, [&](wxCommandEvent&){
@@ -115,6 +98,22 @@ void InstallFrame::CreateWIFISelectPanel() {
         wifiSelectPanel->Destroy();
         wifiSelectPanel = nullptr;
         CreateWPSAskPanel();
+    });
+
+    consolePanel->Show();
+    RunAsync([&]{
+        WIFIAPI wifiAPI(cmdAPI, consolePanel);
+    
+        wxArrayString items;
+        for (const auto& v : wifiAPI.GetAvailableNetworks()) {
+            items.Add(v);
+        }
+        
+        CallAfter([this, items]{
+            //consolePanel->Hide();
+            //CreateWIFISelectPanel();
+            //wifiSelectPanel->wifiList->Set(items);
+        });
     });
     
     allSizer->Add(wifiSelectPanel, 0, wxEXPAND | wxTOP | wxBOTTOM, FromDIP(20));
