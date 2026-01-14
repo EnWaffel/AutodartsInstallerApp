@@ -113,12 +113,11 @@ void InstallFrame::CreateWIFISelectPanel() {
     
         wxArrayString items;
         for (const auto& v : wifiAPI.GetAvailableNetworks()) {
-            wxMessageBox(v, "info", wxOK | wxICON_INFORMATION);
             items.Add(v);
         }
         
         CallAfter([this, items]{
-            //consolePanel->Hide();
+            consolePanel->Hide();
             wifiSelectPanel->Show();
             allSizer->Layout();
             Layout();
