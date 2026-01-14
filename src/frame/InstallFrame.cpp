@@ -270,7 +270,8 @@ void InstallFrame::CreateInstallPanel() {
 
 void InstallFrame::DoNormalConnect() {
     RunAsync([&]{
-        WIFIAPI wifiAPI(cmdAPI, nullptr);
+        consolePanel->Clear();
+        WIFIAPI wifiAPI(cmdAPI, consolePanel);
         WIFIError error = wifiAPI.ConnectNormally(selectedNetwork.utf8_string(), password.utf8_string());
 
         if (error == WIFIAPI_SUCCESS) {
