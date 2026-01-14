@@ -23,7 +23,7 @@ std::vector<std::string> WIFIAPI::GetAvailableNetworks() {
 
     std::istringstream iss(output);
     std::string line;
-    
+
     std::getline(iss, line);
 
     while (std::getline(iss, line)) {
@@ -33,7 +33,7 @@ std::vector<std::string> WIFIAPI::GetAvailableNetworks() {
         ls >> bssid >> freq >> signal >> flags >> ssid;
         std::getline(ls, line);
         ssid.erase(ssid.begin(), std::find_if(ssid.begin(), ssid.end(), [](unsigned char c){
-            return !std::isspace(c);
+            return std::isspace(c);
         })); 
 
         networks.push_back(ssid);
