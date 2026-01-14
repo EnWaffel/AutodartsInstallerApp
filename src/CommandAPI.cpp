@@ -21,6 +21,7 @@ int CommandAPI::RunCommand(const std::string& cmd, std::string* output) {
         if (!line.empty() && line.back() == '\n') line.erase(line.end() - 1);
 
         out.append(line);
+        out.push_back('\n');
         OutputLine(line);
     }
     
