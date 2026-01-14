@@ -174,7 +174,7 @@ void InstallFrame::OnWPSOkButton(wxCommandEvent& event) {
     wpsConnectPanel->okBtn->Hide();
 
     RunAsync([this]{
-        WIFIAPI wifiAPI(cmdAPI, nullptr);
+        WIFIAPI wifiAPI(cmdAPI, consolePanel);
         WIFIError error = wifiAPI.ConnectViaWPS(selectedNetwork.utf8_string());
 
         if (error == WIFIAPI_SUCCESS) {
