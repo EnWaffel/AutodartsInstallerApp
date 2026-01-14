@@ -22,8 +22,10 @@ std::vector<std::string> WIFIAPI::GetAvailableNetworks() {
     cmdAPI.RunCommand("wpa_cli -i wlan0 scan_results", &output);
 
     std::istringstream iss(output);
-
     std::string line;
+    
+    std::getline(iss, line);
+
     while (std::getline(iss, line)) {
         std::string bssid, freq, signal, flags, ssid;
         std::istringstream ls(line);

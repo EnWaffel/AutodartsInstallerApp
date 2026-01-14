@@ -91,7 +91,14 @@ void InstallFrame::CreateWIFISelectPanel() {
         Update();
         Refresh();
 
-        CallAfter([this]{CreateWIFISelectPanel();});
+        CallAfter([this]{
+            wifiSelectPanel->Destroy();
+            CreateWIFISelectPanel();
+            allSizer->Layout();
+            Layout();
+            Update();
+            Refresh();
+        });
     });
 
     wifiSelectPanel->selectBtn->Bind(wxEVT_BUTTON, [&](wxCommandEvent&){
@@ -114,6 +121,10 @@ void InstallFrame::CreateWIFISelectPanel() {
             consolePanel->Hide();
             wifiSelectPanel->wifiList->Set(items);
             wifiSelectPanel->Show();
+            allSizer->Layout();
+            Layout();
+            Update();
+            Refresh();
         });
     });
     
