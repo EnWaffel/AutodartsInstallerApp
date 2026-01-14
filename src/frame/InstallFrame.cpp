@@ -119,12 +119,11 @@ void InstallFrame::CreateWIFISelectPanel() {
         CallAfter([this, items]{
             consolePanel->Hide();
             wifiSelectPanel->Show();
+            wifiSelectPanel->wifiList->Set(items);
             allSizer->Layout();
             Layout();
             Update();
             Refresh();
-            wifiSelectPanel->wifiList->Set(items);
-            wifiSelectPanel->wifiList->FitInside();
         });
     });
     
