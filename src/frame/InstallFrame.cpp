@@ -91,18 +91,22 @@ void InstallFrame::CreateWIFISelectPanel() {
         Refresh();
 
         CallAfter([this]{
-            CreateWIFISelectPanel();
-
-            WIFIAPI wifiAPI(cmdAPI, consolePanel);
             consolePanel->Show();
-
-            wxArrayString items;
-            for (const auto& v : wifiAPI.GetAvailableNetworks()) {
-                items.Add(v);
-            }
-            wifiSelectPanel->wifiList->Set(items);
-
-            consolePanel->Hide();
+            
+            RunAsync([&]{
+                WIFIAPI wifiAPI(cmdAPI, consolePanel);
+            
+                wxArrayString items;
+                for (const auto& v : wifiAPI.GetAvailableNetworks()) {
+                    items.Add(v);
+                }
+                
+                CallAfter([this, items]{
+                    consolePanel->Hide();
+                    CreateWIFISelectPanel();
+                    wifiSelectPanel->wifiList->Set(items);
+                });
+            });
         });
     });
 

@@ -1,9 +1,9 @@
 #include "WIFIAPI.h"
 
-#include <iostream>
 #include <sstream>
 #include <string>
-#include <cstddef>
+#include <algorithm>
+#include <cctype>
 
 WIFIAPI::WIFIAPI(CommandAPI& cmdAPI, ConsolePanel* console) : cmdAPI(cmdAPI), console(console) {   
 }
@@ -20,7 +20,16 @@ std::vector<std::string> WIFIAPI::GetAvailableNetworks() {
 
     std::string line;
     while (std::getline(iss, line)) {
-        std::cout << line << std::endl;
+        std::string bssid, freq, signal, flags, ssid;
+        std::istringstream ls(line);
+
+        ls >> bssid >> freq >> signal >> flags >> ssid;
+        std::getline(ls, line);
+        ssid.erase(ssid.begin(), std::find_if(ssid.begin(), ssid.end(), [](unsigned char c){
+            return !std::isspace(c);
+        }));
+
+        networks.push_back(ssid);
     }
 
     return networks;
