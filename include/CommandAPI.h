@@ -10,7 +10,7 @@ class CommandAPI {
 public:
     void AddOutputCallback(const CommandOutputCallback& callback);
 
-    int RunCommand(const std::string& cmd);
+    int RunCommand(const std::string& cmd, std::string* output = nullptr);
 private:
     std::vector<CommandOutputCallback> outputCallbacks;
 

@@ -1,5 +1,8 @@
 #pragma once
 
+#include "CommandAPI.h"
+#include "panel/ConsolePanel.h"
+
 #include <cstdint>
 #include <vector>
 #include <string>
@@ -13,12 +16,12 @@ using WIFIError = uint16_t;
 
 class WIFIAPI {
 public:
-    WIFIAPI() = default;
-    virtual ~WIFIAPI() = default;
+    WIFIAPI(CommandAPI& cmdAPI, ConsolePanel* console);
 
-    virtual std::vector<std::string> GetAvailableNetworks() = 0;
-    virtual WIFIError ConnectViaWPS() = 0;
-    virtual WIFIError ConnectNormally(const std::string& ssid, const std::string& password) = 0;
+    std::vector<std::string> GetAvailableNetworks();
+    WIFIError ConnectViaWPS(const std::string& ssid);
+    WIFIError ConnectNormally(const std::string& ssid, const std::string& password);
+protected:
+    CommandAPI& cmdAPI;
+    ConsolePanel* console;
 };
-
-extern WIFIAPI* _WIFIAPI;

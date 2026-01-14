@@ -2,6 +2,7 @@
 #include "WIFIAPI.h"
 #include "panel/AskPwdPanel.h"
 #include "panel/ConnectPanel.h"
+#include "panel/ConsolePanel.h"
 #include "panel/InstallPanel.h"
 #include "panel/WIFISelectPanel.h"
 #include "panel/WPSAskPanel.h"
@@ -54,11 +55,16 @@ InstallFrame::InstallFrame() : wxFrame(nullptr, wxID_ANY, "Installer", wxDefault
     subtitleText->SetMaxSize(wxSize(SUBTITLE_WIDTH, -1));
     subtitleText->Wrap(SUBTITLE_WIDTH);
 
+    consolePanel = new ConsolePanel(panel);
+
     allSizer = new wxBoxSizer(wxVERTICAL);
     allSizer->Add(titleText, 0, wxEXPAND | wxTOP | wxBOTTOM, FromDIP(20));
     allSizer->Add(subtitleText, 0, wxALIGN_CENTER_HORIZONTAL | wxTOP | wxBOTTOM, FromDIP(20));
+    allSizer->Add(consolePanel, 0, wxALIGN_CENTER_HORIZONTAL | wxTOP | wxBOTTOM, FromDIP(20));
     panel->SetSizer(allSizer);
     
+    consolePanel->Hide();
+
     Centre();
     //ShowFullScreen(true);
     Show();
@@ -86,6 +92,17 @@ void InstallFrame::CreateWIFISelectPanel() {
 
         CallAfter([this]{
             CreateWIFISelectPanel();
+
+            WIFIAPI wifiAPI(cmdAPI, consolePanel);
+            consolePanel->Show();
+
+            wxArrayString items;
+            for (const auto& v : wifiAPI.GetAvailableNetworks()) {
+                items.Add(v);
+            }
+            wifiSelectPanel->wifiList->Set(items);
+
+            consolePanel->Hide();
         });
     });
 
@@ -144,7 +161,8 @@ void InstallFrame::OnWPSOkButton(wxCommandEvent& event) {
     wpsConnectPanel->okBtn->Hide();
 
     RunAsync([this]{
-        WIFIError error = _WIFIAPI->ConnectViaWPS();
+        WIFIAPI wifiAPI(cmdAPI, nullptr);
+        WIFIError error = wifiAPI.ConnectViaWPS(selectedNetwork.utf8_string());
 
         if (error == WIFIAPI_SUCCESS) {
             CallAfter([this]() { subtitleText->SetLabel("Verbunden!"); allSizer->Layout(); Layout(); });
@@ -231,7 +249,8 @@ void InstallFrame::CreateInstallPanel() {
 
 void InstallFrame::DoNormalConnect() {
     RunAsync([&]{
-        WIFIError error = _WIFIAPI->ConnectNormally(selectedNetwork.utf8_string(), password.utf8_string());
+        WIFIAPI wifiAPI(cmdAPI, nullptr);
+        WIFIError error = wifiAPI.ConnectNormally(selectedNetwork.utf8_string(), password.utf8_string());
 
         if (error == WIFIAPI_SUCCESS) {
             CallAfter([this]() {
@@ -268,10 +287,12 @@ void InstallFrame::DoNormalConnect() {
 }
 
 void InstallFrame::DoInstall() {
+    consolePanel->Show();
+
     RunAsync([this]{
         cmdAPI.AddOutputCallback([this](const std::string& line){
             CallAfter([this, line]{
-                installPanel->console->AddLine(line);
+                consolePanel->AddLine(line);
             });
         });
 

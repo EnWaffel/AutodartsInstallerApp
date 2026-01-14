@@ -7,8 +7,10 @@ void CommandAPI::AddOutputCallback(const CommandOutputCallback& callback) {
     outputCallbacks.push_back(callback);
 }
 
-int CommandAPI::RunCommand(const std::string& cmd) {
+int CommandAPI::RunCommand(const std::string& cmd, std::string* output) {
     char buf[256] = { 0 };
+    std::string out;
+    out.reserve(1024);
 
     OutputLine(fmt::format("Running: {}", cmd));
 
@@ -18,8 +20,11 @@ int CommandAPI::RunCommand(const std::string& cmd) {
         std::string line = buf;
         if (!line.empty() && line.back() == '\n') line.erase(line.end() - 1);
 
+        out.append(line);
         OutputLine(line);
     }
+    
+    if (output) *output = out;
 
     int ret = pclose(p);
     OutputLine(fmt::format("{}: exited with code: {}", cmd, ret));

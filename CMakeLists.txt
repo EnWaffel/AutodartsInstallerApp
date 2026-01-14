@@ -9,8 +9,7 @@ add_subdirectory(depend/fmt)
 add_executable(AutodartsInstallerApp
 src/Application.cpp
 src/frame/InstallFrame.cpp
-src/Windows_WIFIAPI.cpp
-src/Linux_WIFIAPI.cpp
+src/WIFIAPI.cpp
 src/CommandAPI.cpp
 src/panel/WIFISelectPanel.cpp
 src/panel/WPSAskPanel.cpp

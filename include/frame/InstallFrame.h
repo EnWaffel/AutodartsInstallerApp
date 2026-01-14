@@ -2,6 +2,7 @@
 
 #include "panel/AskPwdPanel.h"
 #include "panel/ConnectPanel.h"
+#include "panel/ConsolePanel.h"
 #include "panel/InstallPanel.h"
 #include "panel/WIFISelectPanel.h"
 #include "panel/WPSAskPanel.h"
@@ -37,6 +38,7 @@ private:
     AskPwdPanel* askPwdPanel = nullptr;
     ConnectPanel* connectPanel = nullptr;
     InstallPanel* installPanel = nullptr;
+    ConsolePanel* consolePanel = nullptr;
     
     void OnWPSOkButton(wxCommandEvent& event);
     void OnWPSNextButton(wxCommandEvent& event);
