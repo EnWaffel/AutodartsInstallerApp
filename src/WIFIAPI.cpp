@@ -1,7 +1,8 @@
 #include "WIFIAPI.h"
-#include "wx/log.h"
 
-#include <iostream>
+#include <wx/msgdlg.h>
+#include <wx/log.h>
+#include <wx/utils.h>
 #include <sstream>
 #include <string>
 #include <algorithm>
@@ -19,9 +20,11 @@ std::vector<std::string> WIFIAPI::GetAvailableNetworks() {
     });
 
     cmdAPI.RunCommand("wpa_cli -i wlan0 scan");
+    wxSleep(3);
 
     std::string output;
     cmdAPI.RunCommand("wpa_cli -i wlan0 scan_results", &output);
+    wxMessageBox(output, "info", wxOK | wxICON_INFORMATION);
 
     std::istringstream iss(output);
     std::string line;
