@@ -137,15 +137,19 @@ void InstallFrame::CreateWPSAskPanel() {
     Layout();
 
     wpsAskPanel->noBtn->Bind(wxEVT_BUTTON, [&](wxCommandEvent&){
-        wpsAskPanel->Destroy();
-        wpsAskPanel = nullptr;
-        CreateAskPwdPanel();
+        CallAfter([this]{
+            wpsAskPanel->Destroy();
+            wpsAskPanel = nullptr;
+            CreateAskPwdPanel();
+        });
     });
 
     wpsAskPanel->yesBtn->Bind(wxEVT_BUTTON, [&](wxCommandEvent&){
-        wpsAskPanel->Destroy();
-        wpsAskPanel = nullptr;
-        CreateWPSConnectPanel();
+        CallAfter([&]{
+            wpsAskPanel->Destroy();
+            wpsAskPanel = nullptr;
+            CreateWPSConnectPanel();
+        });
     });
 
     allSizer->Add(wpsAskPanel, 0, wxALIGN_CENTER_HORIZONTAL | wxTOP | wxBOTTOM, FromDIP(20));
