@@ -110,9 +110,9 @@ void InstallFrame::CreateWIFISelectPanel() {
         }
         
         CallAfter([this, items]{
-            //consolePanel->Hide();
-            //CreateWIFISelectPanel();
-            //wifiSelectPanel->wifiList->Set(items);
+            consolePanel->Hide();
+            CreateWIFISelectPanel();
+            wifiSelectPanel->wifiList->Set(items);
         });
     });
     
