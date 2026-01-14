@@ -177,8 +177,6 @@ void InstallFrame::OnWPSOkButton(wxCommandEvent& event) {
         WIFIAPI wifiAPI(cmdAPI, nullptr);
         WIFIError error = wifiAPI.ConnectViaWPS(selectedNetwork.utf8_string());
 
-        consolePanel->Hide();
-
         if (error == WIFIAPI_SUCCESS) {
             CallAfter([this]() { subtitleText->SetLabel("Verbunden!"); allSizer->Layout(); Layout(); });
         } else if (error == WIFIAPI_ERROR_NOT_REACHABLE) {
@@ -204,6 +202,7 @@ void InstallFrame::OnWPSOkButton(wxCommandEvent& event) {
                     wpsConnectPanel = nullptr;
                     CreateWIFISelectPanel();
                 });
+                consolePanel->Hide();
                 allSizer->Layout();
                 Layout();
                 Update();
