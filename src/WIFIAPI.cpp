@@ -1,5 +1,6 @@
 #include "WIFIAPI.h"
 
+#include <iostream>
 #include <sstream>
 #include <string>
 #include <algorithm>
@@ -27,6 +28,8 @@ std::vector<std::string> WIFIAPI::GetAvailableNetworks() {
     std::getline(iss, line);
 
     while (std::getline(iss, line)) {
+        std::cout << "line: " << line << std::endl;
+
         std::string bssid, freq, signal, flags, ssid;
         std::istringstream ls(line);
 
