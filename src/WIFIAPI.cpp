@@ -27,7 +27,7 @@ std::vector<std::string> WIFIAPI::GetAvailableNetworks() {
         std::getline(ls, line);
         ssid.erase(ssid.begin(), std::find_if(ssid.begin(), ssid.end(), [](unsigned char c){
             return !std::isspace(c);
-        }));
+        })); 
 
         networks.push_back(ssid);
     }
