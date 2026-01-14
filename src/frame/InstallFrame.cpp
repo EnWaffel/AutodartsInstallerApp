@@ -246,6 +246,7 @@ void InstallFrame::CreateConnectPanel() {
     connectPanel = new ConnectPanel(panel);
 
     subtitleText->SetLabelText(wxString::Format(wxString::FromUTF8("Verbinde zu: %s..."), selectedNetwork));
+    consolePanel->Show();
     allSizer->Layout();
     Layout();
 
@@ -279,9 +280,11 @@ void InstallFrame::DoNormalConnect() {
                 connectPanel->nextBtn->Show();
                 connectPanel->Layout();
                 connectPanel->nextBtn->Bind(wxEVT_BUTTON, [this](wxCommandEvent&){
-                    connectPanel->Destroy();
-                    connectPanel = nullptr;
-                    CreateInstallPanel();
+                    CallAfter([this]{
+                        connectPanel->Destroy();
+                        connectPanel = nullptr;
+                        CreateInstallPanel();
+                    });
                 });
             });
         } else {
@@ -289,9 +292,11 @@ void InstallFrame::DoNormalConnect() {
                 connectPanel->restartBtn->Show();
                 connectPanel->Layout();
                 connectPanel->restartBtn->Bind(wxEVT_BUTTON, [this](wxCommandEvent&){
-                    connectPanel->Destroy();
-                    connectPanel = nullptr;
-                    CreateWIFISelectPanel();
+                    CallAfter([this]{
+                        connectPanel->Destroy();
+                        connectPanel = nullptr;
+                        CreateWIFISelectPanel();
+                    });
                 });
             });
         }
