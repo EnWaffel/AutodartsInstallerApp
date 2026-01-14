@@ -174,6 +174,7 @@ void InstallFrame::OnWPSOkButton(wxCommandEvent& event) {
     wpsConnectPanel->okBtn->Hide();
 
     RunAsync([this]{
+        consolePanel->Clear();
         WIFIAPI wifiAPI(cmdAPI, consolePanel);
         WIFIError error = wifiAPI.ConnectViaWPS(selectedNetwork.utf8_string());
 
@@ -304,6 +305,8 @@ void InstallFrame::DoInstall() {
     consolePanel->Show();
 
     RunAsync([this]{
+        consolePanel->Clear();
+
         cmdAPI.SetOutputCallback([this](const std::string& line){
             CallAfter([this, line]{
                 consolePanel->AddLine(line);
