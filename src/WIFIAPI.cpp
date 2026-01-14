@@ -82,8 +82,8 @@ WIFIError WIFIAPI::GetAvailableNetworks(std::vector<std::string>& networks) {
     for (int i = 0; i < aps->len; i++) {
         NMAccessPoint* ap = (NMAccessPoint*)aps->pdata[i];
         GBytes* ssid;
-        gsize len;
-        const guint8* data = (const guint8*)g_bytes_get_data(ssid, &len);
+        gsize len = g_bytes_get_size(ssid);
+        const guint8* data = (const guint8*)g_bytes_get_data(ssid, NULL);
 
         wxMessageBox(std::to_string(len).c_str(), "");
 
