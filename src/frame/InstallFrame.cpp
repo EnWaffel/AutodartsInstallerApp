@@ -347,12 +347,12 @@ void InstallFrame::DoInstall() {
                 std::ofstream s(".installed");
                 s << "Ha erwischt! ;)";
                 s.close();
+                
+                cmdAPI.RunCommand("sudo reboot");
             });
 
             allSizer->Layout();
             Layout();
-
-            cmdAPI.RunCommand("sudo reboot");
         });
     });
 }
