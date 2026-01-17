@@ -7,7 +7,6 @@
 #include "panel/WIFISelectPanel.h"
 #include "panel/WPSAskPanel.h"
 #include "panel/WPSConnectPanel.h"
-#include "wx/timer.h"
 
 #include <cstdlib>
 #include <fstream>
