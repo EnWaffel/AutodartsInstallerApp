@@ -28,7 +28,7 @@ DashboardFrame::DashboardFrame() : wxFrame(nullptr, wxID_ANY, "Autodarts Dashboa
     sizer->Add(statusText, 0, wxEXPAND | wxTOP | wxBOTTOM, 5);
     sizer->Add(startButton, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
     sizer->Add(stopButton, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
-    sizer->Add(console, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 10);
+    sizer->Add(console, 1, wxEXPAND | wxALL, 10);
 
     panel->SetSizer(sizer);
 
