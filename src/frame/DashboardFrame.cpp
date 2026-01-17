@@ -1,8 +1,44 @@
 #include "frame/DashboardFrame.h"
 #include "wx/wx.h"
 
+#include <ifaddrs.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <cstring>
+#include <string>
+
 wxBEGIN_EVENT_TABLE(DashboardFrame, wxFrame)
 wxEND_EVENT_TABLE()
+
+static std::string GetInterfaceIPv4(const std::string& interfaceName)
+{
+    struct ifaddrs *ifaddr, *ifa;
+    std::string ipAddress;
+
+    if (getifaddrs(&ifaddr) == -1) {
+        perror("getifaddrs");
+        return ""; // error
+    }
+
+    for (ifa = ifaddr; ifa != nullptr; ifa = ifa->ifa_next) {
+        if (!ifa->ifa_addr)
+            continue;
+
+        if (ifa->ifa_addr->sa_family == AF_INET &&
+            interfaceName == ifa->ifa_name) 
+        {
+            char ip[INET_ADDRSTRLEN];
+            void* addr_ptr = &((struct sockaddr_in*)ifa->ifa_addr)->sin_addr;
+            inet_ntop(AF_INET, addr_ptr, ip, INET_ADDRSTRLEN);
+            ipAddress = ip;
+            break; // stop after first IPv4 found
+        }
+    }
+
+    freeifaddrs(ifaddr);
+    return ipAddress; // empty string if not found
+}
+
 
 DashboardFrame::DashboardFrame() : wxFrame(nullptr, wxID_ANY, "Autodarts Dashboard", wxDefaultPosition, wxSize(600, 500)) {
     panel = new wxPanel(this);
@@ -13,7 +49,7 @@ DashboardFrame::DashboardFrame() : wxFrame(nullptr, wxID_ANY, "Autodarts Dashboa
     font.SetWeight(wxFONTWEIGHT_BOLD);
     titleText->SetFont(font);
 
-    statusText = new wxStaticText(panel, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_HORIZONTAL);
+    statusText = new wxStaticText(panel, wxID_ANY, "IP-Addresse: " + GetInterfaceIPv4("wlan0"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_HORIZONTAL);
     wxFont statusFont = statusText->GetFont();
     statusFont.SetPointSize(12);
     statusText->SetFont(statusFont);

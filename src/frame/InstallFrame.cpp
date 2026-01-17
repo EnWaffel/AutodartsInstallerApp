@@ -118,7 +118,7 @@ void InstallFrame::CreateWIFISelectPanel() {
         }
         
         CallAfter([this, items]{
-            subtitleText->SetLabelText(wxString::FromUTF8("Bitte wähle dein WLAN-Netwerk aus:"));
+            subtitleText->SetLabelText(wxString::FromUTF8("Bitte wähle dein WLAN-Netzwerk aus:"));
             consolePanel->Hide();
             wifiSelectPanel->Show();
             wifiSelectPanel->wifiList->Set(items);
@@ -347,7 +347,7 @@ void InstallFrame::DoInstall() {
                 std::ofstream s(".installed");
                 s << "Ha erwischt! ;)";
                 s.close();
-                
+
                 cmdAPI.RunCommand("sudo reboot");
             });
 
