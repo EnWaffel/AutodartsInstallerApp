@@ -1,4 +1,5 @@
 #include "frame/DashboardFrame.h"
+#include "wx/wx.h"
 
 wxBEGIN_EVENT_TABLE(DashboardFrame, wxFrame)
 wxEND_EVENT_TABLE()
@@ -25,9 +26,9 @@ DashboardFrame::DashboardFrame() : wxFrame(nullptr, wxID_ANY, "Autodarts Dashboa
     wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
     sizer->Add(titleText, 0, wxEXPAND | wxTOP | wxBOTTOM, 10);
     sizer->Add(statusText, 0, wxEXPAND | wxTOP | wxBOTTOM, 5);
-    sizer->Add(startButton, 0, wxALL, 5);
-    sizer->Add(stopButton, 0, wxALL, 5);
-    sizer->Add(console, 1, wxALL, 10);
+    sizer->Add(startButton, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
+    sizer->Add(stopButton, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
+    sizer->Add(console, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 10);
 
     panel->SetSizer(sizer);
 
@@ -50,6 +51,7 @@ DashboardFrame::DashboardFrame() : wxFrame(nullptr, wxID_ANY, "Autodarts Dashboa
 void DashboardFrame::UpdateStatus()
 {
     commandAPI->RunCommand("systemctl is-active autodarts.service");
+    statusText->SetLabel("");
 }
 
 void DashboardFrame::OnStartClicked(wxCommandEvent& event)
