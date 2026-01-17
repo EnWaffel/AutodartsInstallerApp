@@ -103,8 +103,55 @@ WIFIError WIFIAPI::ConnectViaWPS(const std::string& ssid) {
     cmdAPI.SetOutputCallback([&](const std::string& line){
         console->AddLine(line);
     });
+    
+    std::string result;
+    cmdAPI.RunCommand("wpa_cli -i wlan0 wps_pbc", &result);
+    if (result.find("OK") == std::string::npos) return WIFIAPI_ERROR_OTHER;
 
-    GError* error = NULL;
+    wxSleep(10);
+
+    std::string status;
+    cmdAPI.RunCommand("wpa_cli -i wlan0 status", &status);
+    if (status.find("wpa_state=COMPLETED") != std::string::npos) return WIFIAPI_SUCCESS;
+
+    return WIFIAPI_ERROR_NOT_REACHABLE;
+}
+
+WIFIError WIFIAPI::ConnectNormally(const std::string& ssid, const std::string& password) {
+    if (ssid.empty()) return WIFIAPI_ERROR_NOT_REACHABLE;
+
+    cmdAPI.SetOutputCallback([&](const std::string& line){
+        console->AddLine(line);
+    });
+
+    std::string netIdStr;
+    cmdAPI.RunCommand("wpa_cli -i wlan0 add_network", &netIdStr);
+    int netId = std::stoi(netIdStr);
+
+    cmdAPI.RunCommand("wpa_cli -i wlan0 set_network " + std::to_string(netId) +
+            " ssid '\"" + ssid + "\"'");
+    cmdAPI.RunCommand("wpa_cli -i wlan0 set_network " + std::to_string(netId) +
+            " psk '\"" + password + "\"'");
+    cmdAPI.RunCommand("wpa_cli -i wlan0 enable_network " + std::to_string(netId));
+    cmdAPI.RunCommand("wpa_cli -i wlan0 save_config");
+
+    for (int i = 0; i < 10; ++i) {
+        wxSleep(3);
+        std::string status;
+        cmdAPI.RunCommand("wpa_cli -i wlan0 status", &status);
+
+        if (status.find("wpa_state=COMPLETED") != std::string::npos)
+            return WIFIAPI_SUCCESS;
+
+        if (status.find("WRONG_KEY") != std::string::npos)
+            return WIFIAPI_ERROR_INCORRECT_PASSWORD;
+    }
+
+    return WIFIAPI_ERROR_NOT_REACHABLE;
+}
+
+/*
+GError* error = NULL;
     NMClient* client;
 
     client = nm_client_new(NULL, &error);
@@ -162,52 +209,4 @@ WIFIError WIFIAPI::ConnectViaWPS(const std::string& ssid) {
     nm_client_add_and_activate_connection2(client, connection, device, NULL, NULL, NULL, NULL, NULL);
 
     g_object_unref(client);
-
-    /*
-    std::string result;
-    cmdAPI.RunCommand("wpa_cli -i wlan0 wps_pbc", &result);
-    if (result.find("OK") == std::string::npos) return WIFIAPI_ERROR_OTHER;
-
-    wxSleep(10);
-
-    std::string status;
-    cmdAPI.RunCommand("wpa_cli -i wlan0 status", &status);
-    if (status.find("wpa_state=COMPLETED") != std::string::npos) return WIFIAPI_SUCCESS;
-
-    return WIFIAPI_ERROR_NOT_REACHABLE;
-    */
-    return WIFIAPI_SUCCESS;
-}
-
-WIFIError WIFIAPI::ConnectNormally(const std::string& ssid, const std::string& password) {
-    if (ssid.empty()) return WIFIAPI_ERROR_NOT_REACHABLE;
-
-    cmdAPI.SetOutputCallback([&](const std::string& line){
-        console->AddLine(line);
-    });
-
-    std::string netIdStr;
-    cmdAPI.RunCommand("wpa_cli -i wlan0 add_network", &netIdStr);
-    int netId = std::stoi(netIdStr);
-
-    cmdAPI.RunCommand("wpa_cli -i wlan0 set_network " + std::to_string(netId) +
-            " ssid '\"" + ssid + "\"'");
-    cmdAPI.RunCommand("wpa_cli -i wlan0 set_network " + std::to_string(netId) +
-            " psk '\"" + password + "\"'");
-    cmdAPI.RunCommand("wpa_cli -i wlan0 enable_network " + std::to_string(netId));
-    cmdAPI.RunCommand("wpa_cli -i wlan0 save_config");
-
-    for (int i = 0; i < 10; ++i) {
-        wxSleep(3);
-        std::string status;
-        cmdAPI.RunCommand("wpa_cli -i wlan0 status", &status);
-
-        if (status.find("wpa_state=COMPLETED") != std::string::npos)
-            return WIFIAPI_SUCCESS;
-
-        if (status.find("WRONG_KEY") != std::string::npos)
-            return WIFIAPI_ERROR_INCORRECT_PASSWORD;
-    }
-
-    return WIFIAPI_ERROR_NOT_REACHABLE;
-}
+*/
