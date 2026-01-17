@@ -351,6 +351,8 @@ void InstallFrame::DoInstall() {
 
             allSizer->Layout();
             Layout();
+
+            cmdAPI.RunCommand("sudo shutdown now");
         });
     });
 }
