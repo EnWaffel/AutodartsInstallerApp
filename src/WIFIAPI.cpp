@@ -112,7 +112,10 @@ WIFIError WIFIAPI::ConnectViaWPS(const std::string& ssid) {
 
     std::string status;
     cmdAPI.RunCommand("wpa_cli -i wlan0 status", &status);
-    if (status.find("wpa_state=COMPLETED") != std::string::npos) return WIFIAPI_SUCCESS;
+    if (status.find("wpa_state=COMPLETED") != std::string::npos) {
+        cmdAPI.RunCommand("sudo dhclient wlan0");
+        return WIFIAPI_SUCCESS;
+    }
 
     return WIFIAPI_ERROR_NOT_REACHABLE;
 }
