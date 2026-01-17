@@ -3,6 +3,7 @@
 #include <wx/wx.h>
 #include <memory>
 #include "CommandAPI.h"
+#include "panel/ConsolePanel.h"
 
 class DashboardFrame : public wxFrame {
 public:
@@ -14,6 +15,7 @@ private:
     wxStaticText* statusText;
     wxButton* startButton;
     wxButton* stopButton;
+    ConsolePanel* console;
 
     std::unique_ptr<CommandAPI> commandAPI;
 
