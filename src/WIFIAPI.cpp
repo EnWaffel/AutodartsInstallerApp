@@ -1,4 +1,6 @@
 #include "WIFIAPI.h"
+#include "glib-object.h"
+#include "nm-core-types.h"
 
 #include <cstddef>
 #include <cstring>
@@ -87,8 +89,9 @@ WIFIError WIFIAPI::GetAvailableNetworks(std::vector<std::string>& networks) {
         const guint8* data = (const guint8*)g_bytes_get_data(ssid, NULL);
 
         char* ssidStr = nm_utils_ssid_to_utf8(data, len);
-
-        networks.push_back(ssidStr);
+        if (std::find(networks.begin(), networks.end(), ssidStr) == networks.end()) {
+            networks.push_back(ssidStr);
+        }
     }
 
     g_object_unref(client);
@@ -101,6 +104,66 @@ WIFIError WIFIAPI::ConnectViaWPS(const std::string& ssid) {
         console->AddLine(line);
     });
 
+    GError* error = NULL;
+    NMClient* client;
+
+    client = nm_client_new(NULL, &error);
+    if (!client) {
+        static char buf[128];
+        memset(buf, 0, sizeof(buf));
+        sprintf(buf, "\n[ERROR] %s\n", error->message);
+        console->AddLine(buf);
+        return WIFIAPI_ERROR_OTHER;
+    }
+
+    const GPtrArray* devices = nm_client_get_devices(client);
+    NMDevice* device = NULL;
+
+    for (int i = 0; i < devices->len; i++) {
+        device = (NMDevice*)devices->pdata[i];
+        if (NM_IS_DEVICE_WIFI(device)) break;
+    }
+
+    if (!device) {
+        g_object_unref(client);
+        console->AddLine("\n[ERROR] No wifi device found!\n");
+        return WIFIAPI_ERROR_OTHER;
+    }
+
+    NMConnection* connection;
+    NMSettingConnection* s_con;
+    NMSettingWireless* s_wifi;
+    NMSettingWirelessSecurity* s_wsec;
+
+    connection = nm_simple_connection_new();
+
+    s_con = (NMSettingConnection*)nm_setting_connection_new();
+    g_object_set(G_OBJECT(s_con),
+        NM_SETTING_CONNECTION_ID, ssid.c_str(),
+        NM_SETTING_CONNECTION_TYPE, NM_SETTING_WIRELESS_SETTING_NAME,
+        NM_SETTING_CONNECTION_AUTOCONNECT, TRUE,
+    NULL);
+
+    s_wifi = (NMSettingWireless*)nm_setting_wireless_new();
+    g_object_set(G_OBJECT(s_con),
+        NM_SETTING_WIRELESS_SSID, ssid.c_str(),
+        NM_SETTING_WIRELESS_MODE, "infrastructure",
+    NULL);
+    nm_connection_add_setting(connection, NM_SETTING(s_wifi));
+
+    s_wsec = (NMSettingWirelessSecurity*)nm_setting_wireless_security_new();
+    g_object_set(G_OBJECT(s_wsec),
+        NM_SETTING_WIRELESS_SECURITY_KEY_MGMT, "wpa-psk",
+        NM_SETTING_WIRELESS_SECURITY_PSK, "",
+        NM_SETTING_WIRELESS_SECURITY_WPS_METHOD, NM_SETTING_WIRELESS_SECURITY_WPS_METHOD_PBC,
+    NULL);
+    nm_connection_add_setting(connection, NM_SETTING(s_wsec));
+
+    nm_client_add_and_activate_connection2(client, connection, device, NULL, NULL, NULL, NULL, NULL);
+
+    g_object_unref(client);
+
+    /*
     std::string result;
     cmdAPI.RunCommand("wpa_cli -i wlan0 wps_pbc", &result);
     if (result.find("OK") == std::string::npos) return WIFIAPI_ERROR_OTHER;
@@ -112,6 +175,8 @@ WIFIError WIFIAPI::ConnectViaWPS(const std::string& ssid) {
     if (status.find("wpa_state=COMPLETED") != std::string::npos) return WIFIAPI_SUCCESS;
 
     return WIFIAPI_ERROR_NOT_REACHABLE;
+    */
+    return WIFIAPI_SUCCESS;
 }
 
 WIFIError WIFIAPI::ConnectNormally(const std::string& ssid, const std::string& password) {
