@@ -13,7 +13,7 @@ DashboardFrame::DashboardFrame() : wxFrame(nullptr, wxID_ANY, "Autodarts Dashboa
     font.SetWeight(wxFONTWEIGHT_BOLD);
     titleText->SetFont(font);
 
-    statusText = new wxStaticText(panel, wxID_ANY, "Checking...", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_HORIZONTAL);
+    statusText = new wxStaticText(panel, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_HORIZONTAL);
     wxFont statusFont = statusText->GetFont();
     statusFont.SetPointSize(12);
     statusText->SetFont(statusFont);
@@ -50,33 +50,17 @@ DashboardFrame::DashboardFrame() : wxFrame(nullptr, wxID_ANY, "Autodarts Dashboa
 
 void DashboardFrame::UpdateStatus()
 {
-    commandAPI->RunCommand("systemctl is-active autodarts.service");
+    commandAPI->RunCommand("systemctl status autodarts.service");
 }
 
 void DashboardFrame::OnStartClicked(wxCommandEvent& event)
 {
-    statusText->SetLabel("STATUS: Starting...");
-    Layout();
-    Update();
-    Refresh();
     commandAPI->RunCommand("sudo systemctl start autodarts.service");
     UpdateStatus();
-    statusText->SetLabel("STATUS: Stopped");
-    Layout();
-    Update();
-    Refresh();
 }
 
 void DashboardFrame::OnStopClicked(wxCommandEvent& event)
 {
-    statusText->SetLabel("STATUS: Stopping...");
-    Layout();
-    Update();
-    Refresh();
     commandAPI->RunCommand("sudo systemctl stop autodarts.service");
     UpdateStatus();
-    statusText->SetLabel("STATUS: Running");
-    Layout();
-    Update();
-    Refresh();
 }
