@@ -51,19 +51,32 @@ DashboardFrame::DashboardFrame() : wxFrame(nullptr, wxID_ANY, "Autodarts Dashboa
 void DashboardFrame::UpdateStatus()
 {
     commandAPI->RunCommand("systemctl is-active autodarts.service");
-    statusText->SetLabel("");
 }
 
 void DashboardFrame::OnStartClicked(wxCommandEvent& event)
 {
-    statusText->SetLabel("Starting service...");
+    statusText->SetLabel("STATUS: Starting...");
+    Layout();
+    Update();
+    Refresh();
     commandAPI->RunCommand("sudo systemctl start autodarts.service");
     UpdateStatus();
+    statusText->SetLabel("STATUS: Stopped");
+    Layout();
+    Update();
+    Refresh();
 }
 
 void DashboardFrame::OnStopClicked(wxCommandEvent& event)
 {
-    statusText->SetLabel("Stopping service...");
+    statusText->SetLabel("STATUS: Stopping...");
+    Layout();
+    Update();
+    Refresh();
     commandAPI->RunCommand("sudo systemctl stop autodarts.service");
     UpdateStatus();
+    statusText->SetLabel("STATUS: Running");
+    Layout();
+    Update();
+    Refresh();
 }
