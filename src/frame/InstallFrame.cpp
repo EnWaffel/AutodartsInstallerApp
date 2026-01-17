@@ -10,6 +10,7 @@
 #include "wx/timer.h"
 
 #include <cstdlib>
+#include <fstream>
 #include <string>
 #include <wx/event.h>
 #include <wx/gdicmn.h>
@@ -341,14 +342,16 @@ void InstallFrame::DoInstall() {
 
         CallAfter([this]() {
             subtitleText->SetLabel("Alles Installiert!");
+            installPanel->restartBtn->Show();
+
+            installPanel->restartBtn->Bind(wxEVT_BUTTON, [this](wxCommandEvent&){
+                std::ofstream s(".installed");
+                s << "Ha erwischt! ;)";
+                s.close();
+            });
+
             allSizer->Layout();
             Layout();
-
-            finishedTimer.StartOnce(3000);
-            finishedTimer.Bind(wxEVT_TIMER, [&](wxTimerEvent&){
-                installPanel->Destroy();
-                installPanel = nullptr;
-            });
         });
     });
 }
