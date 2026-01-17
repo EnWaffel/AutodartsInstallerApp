@@ -66,7 +66,7 @@ InstallFrame::InstallFrame() : wxFrame(nullptr, wxID_ANY, "Installer", wxDefault
     
     consolePanel->Hide();
 
-    Centre();
+    Center();
     ShowFullScreen(true);
     Show();
 
@@ -352,7 +352,7 @@ void InstallFrame::DoInstall() {
             allSizer->Layout();
             Layout();
 
-            cmdAPI.RunCommand("sudo shutdown now");
+            cmdAPI.RunCommand("sudo reboot");
         });
     });
 }
