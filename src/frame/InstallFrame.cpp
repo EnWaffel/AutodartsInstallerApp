@@ -67,7 +67,7 @@ InstallFrame::InstallFrame() : wxFrame(nullptr, wxID_ANY, "Installer", wxDefault
     consolePanel->Hide();
 
     Centre();
-    //ShowFullScreen(true);
+    ShowFullScreen(true);
     Show();
 
     Layout();

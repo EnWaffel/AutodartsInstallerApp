@@ -43,7 +43,7 @@ DashboardFrame::DashboardFrame() : wxFrame(nullptr, wxID_ANY, "Autodarts Dashboa
     stopButton->Bind(wxEVT_BUTTON, &DashboardFrame::OnStopClicked, this);
 
     Centre();
-    Show();
+    ShowFullScreen(true);
 
     UpdateStatus();
 }
