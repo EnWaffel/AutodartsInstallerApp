@@ -18,6 +18,7 @@ src/panel/AskPwdPanel.cpp
 src/panel/ConnectPanel.cpp
 src/panel/InstallPanel.cpp
 src/panel/ConsolePanel.cpp
+src/frame/DashboardFrame.cpp
 )
 target_include_directories(AutodartsInstallerApp PRIVATE include depend/wxWidgets/include depend/fmt/include /usr/include/glib-2.0 /usr/include/libnm)
 target_link_libraries(AutodartsInstallerApp PRIVATE wxcore wxbase fmt nm)

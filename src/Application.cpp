@@ -1,4 +1,5 @@
 #include "Application.h"
+#include "frame/DashboardFrame.h"
 #include "frame/InstallFrame.h"
 #include "wx/app.h"
 
@@ -9,6 +10,8 @@ namespace fs = std::filesystem;
 
 bool Application::OnInit() {
     if (fs::exists(".installed")) {
+        DashboardFrame* frame = new DashboardFrame();
+        frame->Show();
     } else {
         InstallFrame* frame = new InstallFrame();
         frame->Show();
