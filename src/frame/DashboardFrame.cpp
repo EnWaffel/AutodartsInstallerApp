@@ -83,7 +83,7 @@ DashboardFrame::DashboardFrame() : wxFrame(nullptr, wxID_ANY, "Autodarts Dashboa
 
     startButton->Bind(wxEVT_BUTTON, &DashboardFrame::OnStartClicked, this);
     stopButton->Bind(wxEVT_BUTTON, &DashboardFrame::OnStopClicked, this);
-    reinstallBtn->Bind(wxEVT_BUTTON, [&](wxCommandEvent*){
+    reinstallBtn->Bind(wxEVT_BUTTON, [&](wxCommandEvent&){
         fs::remove(".installed");
         commandAPI->RunCommand("sudo reboot"); 
     });
