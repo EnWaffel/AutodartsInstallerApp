@@ -1,4 +1,6 @@
 #include "frame/DashboardFrame.h"
+#include "wx/event.h"
+#include "wx/gtk/button.h"
 #include "wx/wx.h"
 
 #include <ifaddrs.h>
@@ -6,6 +8,9 @@
 #include <netinet/in.h>
 #include <cstring>
 #include <string>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 wxBEGIN_EVENT_TABLE(DashboardFrame, wxFrame)
 wxEND_EVENT_TABLE()
@@ -39,7 +44,6 @@ static std::string GetInterfaceIPv4(const std::string& interfaceName)
     return ipAddress; // empty string if not found
 }
 
-
 DashboardFrame::DashboardFrame() : wxFrame(nullptr, wxID_ANY, "Autodarts Dashboard", wxDefaultPosition, wxSize(600, 500)) {
     panel = new wxPanel(this);
 
@@ -49,13 +53,14 @@ DashboardFrame::DashboardFrame() : wxFrame(nullptr, wxID_ANY, "Autodarts Dashboa
     font.SetWeight(wxFONTWEIGHT_BOLD);
     titleText->SetFont(font);
 
-    statusText = new wxStaticText(panel, wxID_ANY, "IP-Addresse: " + GetInterfaceIPv4("wlan0"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_HORIZONTAL);
+    statusText = new wxStaticText(panel, wxID_ANY, "IP-Addresse: " + GetInterfaceIPv4("wlan0") + " (Autodarts Port: 3180)", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_HORIZONTAL);
     wxFont statusFont = statusText->GetFont();
     statusFont.SetPointSize(12);
     statusText->SetFont(statusFont);
 
     startButton = new wxButton(panel, wxID_ANY, "Start Service");
     stopButton  = new wxButton(panel, wxID_ANY, "Stop Service");
+    wxButton* reinstallBtn  = new wxButton(panel, wxID_ANY, "Neuinstallieren");
 
     console = new ConsolePanel(panel);
 
@@ -65,6 +70,7 @@ DashboardFrame::DashboardFrame() : wxFrame(nullptr, wxID_ANY, "Autodarts Dashboa
     sizer->Add(startButton, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
     sizer->Add(stopButton, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
     sizer->Add(console, 1, wxEXPAND | wxALL, 10);
+    sizer->Add(reinstallBtn, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 
     panel->SetSizer(sizer);
 
@@ -77,6 +83,10 @@ DashboardFrame::DashboardFrame() : wxFrame(nullptr, wxID_ANY, "Autodarts Dashboa
 
     startButton->Bind(wxEVT_BUTTON, &DashboardFrame::OnStartClicked, this);
     stopButton->Bind(wxEVT_BUTTON, &DashboardFrame::OnStopClicked, this);
+    reinstallBtn->Bind(wxEVT_BUTTON, [&](wxButton*){
+        fs::remove(".installed");
+        commandAPI->RunCommand("sudo reboot"); 
+    });
 
     Center();
     ShowFullScreen(true);
